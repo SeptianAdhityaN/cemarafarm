@@ -29,6 +29,9 @@ export const metadata: Metadata = {
   authors: [{ name: "CemaraFarm Team" }],
   creator: "CemaraFarm",
   
+  verification: {
+    google: "0UUzAal14TR3B_M5vpb7YsKQOxEqgxc8fpJZ8Scp2dg",
+  },
   // Open Graph (Untuk tampilan saat link dibagikan di WA/FB/IG)
   openGraph: {
     type: "website",
