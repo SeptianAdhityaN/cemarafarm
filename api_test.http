@@ -1,0 +1,88 @@
+### ==========================================
+### VARIABEL GLOBAL
+### ==========================================
+@baseUrl = http://localhost:3000/api
+@varietyId = var-merah
+@channelId = ch-wa
+
+### ==========================================
+### 1. MASTER DATA (Prasyarat)
+### ==========================================
+
+### Ambil Semua Varietas
+GET {{baseUrl}}/varieties
+
+### Ambil Semua Sales Channel
+GET {{baseUrl}}/channels
+
+###
+
+### ==========================================
+### 2. MODUL PRODUKSI (Lifecycle)
+### ==========================================
+
+### A. Buat Batch Baru (Semai)
+# @name createBatch
+POST {{baseUrl}}/production
+Content-Type: application/json
+
+{
+    "varietyId": "{{varietyId}}",
+    "sowingDate": "2026-01-19",
+    "initialSeeds": 200
+}
+
+### B. Ambil Detail (Menggunakan ID dari response POST di atas)
+# Variabel ini akan otomatis terisi setelah klik "Send Request" pada request A di atas
+@newBatchId = {{createBatch.response.body.$.id}}
+
+GET {{baseUrl}}/production/{{newBatchId}}
+
+### C. Update Batch: Input Hasil Panen (Input Stok Awal)
+PATCH {{baseUrl}}/production/{{newBatchId}}
+Content-Type: application/json
+
+{
+    "status": "READY_TO_HARVEST",
+    "actualHarvestDate": "2026-03-05T00:00:00Z",
+    "currentStockKg": 25.5
+}
+
+###
+
+### ==========================================
+### 3. MODUL PENJUALAN & STOK
+### ==========================================
+
+### A. Catat Penjualan (Otomatis Potong Stok)
+POST {{baseUrl}}/sales
+Content-Type: application/json
+
+{
+    "batchId": "{{newBatchId}}",
+    "channelId": "{{channelId}}",
+    "customerName": "Barelo Resto",
+    "quantityKg": 5.0,
+    "unitPrice": 30000
+}
+
+### B. Cek Stok Batch (Harus sisa 20.5 kg)
+GET {{baseUrl}}/production/{{newBatchId}}
+
+### C. Ambil Laporan Penjualan
+GET {{baseUrl}}/sales/report?month=01&year=2026
+
+###
+
+### ==========================================
+### 4. DASHBOARD & SOFT DELETE
+### ==========================================
+
+### A. Dashboard Summary
+GET {{baseUrl}}/dashboard
+
+### B. SOFT DELETE: Arsipkan Batch
+DELETE {{baseUrl}}/production/{{newBatchId}}
+
+### C. Verifikasi: Cek Detail (Harus 404 karena isArchived: true)
+GET {{baseUrl}}/production/{{newBatchId}}
