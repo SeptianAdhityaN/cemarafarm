@@ -8,7 +8,10 @@ interface BatchOption {
   id: string;
   batchCode: string;
   currentStockKg: number;
-  variety: { name: string };
+  variety: {
+    name: string;
+    price: number; 
+  };
 }
 
 interface ChannelOption {
@@ -25,14 +28,30 @@ export function AddSaleForm({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [state, formAction, isPending] = useActionState(createSale, null);
+  
+  // State untuk input terkontrol
+  const [selectedBatchId, setSelectedBatchId] = useState("");
+  const [qty, setQty] = useState<number>(0);
+  const [price, setPrice] = useState<number>(0);
 
-  const [qty, setQty] = useState(0);
-  const [price, setPrice] = useState(0);
+  // Fungsi untuk menangani perubahan batch dan auto-fill harga
+  const handleBatchChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = e.target.value;
+    setSelectedBatchId(id);
+
+    const selectedBatch = batches.find((b) => b.id === id);
+    if (selectedBatch) {
+      setPrice(selectedBatch.variety.price);
+    } else {
+      setPrice(0);
+    }
+  };
 
   const clientAction = async (formData: FormData) => {
     await formAction(formData);
-
+    // Reset form setelah sukses
     setIsOpen(false);
+    setSelectedBatchId("");
     setQty(0);
     setPrice(0);
   };
@@ -55,7 +74,6 @@ export function AddSaleForm({
               Transaksi Baru
             </h2>
 
-            {/* Gunakan clientAction sebagai pengganti formAction langsung */}
             <form action={clientAction} className="space-y-4">
               <div>
                 <label className="text-sm font-medium text-slate-700">
@@ -64,6 +82,8 @@ export function AddSaleForm({
                 <select
                   name="batchId"
                   required
+                  value={selectedBatchId}
+                  onChange={handleBatchChange} // Menghubungkan fungsi handleBatchChange
                   className="w-full p-2 mt-1 border border-slate-200 rounded-lg outline-emerald-500 bg-white shadow-sm"
                 >
                   <option value="">-- Pilih Batch --</option>
@@ -115,6 +135,7 @@ export function AddSaleForm({
                     step="0.01"
                     name="quantityKg"
                     required
+                    value={qty || ""}
                     onChange={(e) => setQty(parseFloat(e.target.value) || 0)}
                     className="w-full p-2 mt-1 border border-slate-200 rounded-lg outline-emerald-500 px-3 shadow-sm py-2"
                   />
@@ -127,6 +148,7 @@ export function AddSaleForm({
                     type="number"
                     name="unitPrice"
                     required
+                    value={price || ""} // Menjadikan input terkontrol oleh state
                     onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
                     className="w-full p-2 mt-1 border border-slate-200 rounded-lg outline-emerald-500 px-3 shadow-sm py-2"
                   />
@@ -145,7 +167,6 @@ export function AddSaleForm({
                 <ShoppingCart className="text-emerald-200" size={32} />
               </div>
 
-              {/* Tampilkan error jika ada */}
               {state?.error && (
                 <p className="text-xs text-red-600 bg-red-50 p-2 rounded border border-red-100 italic font-medium">
                   ⚠️ {state.error}

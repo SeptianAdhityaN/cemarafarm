@@ -1,115 +1,99 @@
 "use client";
 
-import { createVariety } from "@/lib/actions/variety";
-import { useActionState, useEffect, useRef } from "react";
-import { Leaf, DollarSign, Image as ImageIcon, Tag, AlignLeft } from "lucide-react";
+import { useActionState, useEffect } from "react";
+import { createVariety, updateVariety, VarietyState } from "@/lib/actions/variety";
+import { Loader2, Save, Plus } from "lucide-react";
+import { Variety } from "@/types/variety";
 
-export function VarietyForm() {
-  const [state, formAction, isPending] = useActionState(createVariety, null);
-  const formRef = useRef<HTMLFormElement>(null);
+interface VarietyFormProps {
+  initialData?: Variety | null;
+  onSuccess?: () => void;
+}
+
+export function VarietyForm({ initialData, onSuccess }: VarietyFormProps) {
+  // Bind ID jika dalam mode edit untuk Server Action
+  const boundAction = initialData 
+    ? updateVariety.bind(null, initialData.id) 
+    : createVariety;
+
+  const [state, formAction, isPending] = useActionState(boundAction, null);
 
   useEffect(() => {
-    if (state?.success) {
-      formRef.current?.reset();
+    if (state?.success && onSuccess) {
+      onSuccess();
     }
-  }, [state]);
+  }, [state, onSuccess]);
 
   return (
-    <div className="bg-card p-6 rounded-2xl shadow-sm border border-border">
-      <h2 className="text-xl font-serif font-bold mb-6 flex items-center gap-2 text-foreground">
-        <Leaf className="text-primary" size={24} /> Konfigurasi Varietas Sayur
-      </h2>
-      
-      <form ref={formRef} action={formAction} className="space-y-5">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Nama Varietas */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-1.5">
-              <Tag size={12} /> Nama Varietas
-            </label>
-            <input
-              name="name"
-              placeholder="Misal: Selada Romaine"
-              required
-              className="w-full p-2.5 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all"
-              disabled={isPending}
-            />
-          </div>
-
-          {/* Harga Default */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-1.5">
-              <DollarSign size={12} /> Harga Default (per Kg)
-            </label>
-            <input
-              name="price"
-              type="number"
-              placeholder="35000"
-              required
-              className="w-full p-2.5 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all"
-              disabled={isPending}
-            />
-          </div>
-
-          {/* Kategori */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-1.5">
-              <Tag size={12} /> Kategori
-            </label>
-            <input
-              name="category"
-              placeholder="Misal: Sayuran Hijau / Herbs"
-              className="w-full p-2.5 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all"
-              disabled={isPending}
-            />
-          </div>
-
-          {/* Image URL */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-1.5">
-              <ImageIcon size={12} /> URL Gambar Produk
-            </label>
-            <input
-              name="imageUrl"
-              placeholder="https://..."
-              className="w-full p-2.5 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all"
-              disabled={isPending}
-            />
-          </div>
-        </div>
-
-        {/* Deskripsi */}
-        <div className="space-y-1.5">
-          <label className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-1.5">
-            <AlignLeft size={12} /> Deskripsi Produk (untuk Katalog)
-          </label>
-          <textarea
-            name="description"
-            rows={2}
-            placeholder="Jelaskan kesegaran atau manfaat sayur ini..."
-            className="w-full p-2.5 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all resize-none"
-            disabled={isPending}
+    <form action={formAction} className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Nama Varietas</label>
+          <input
+            name="name"
+            defaultValue={initialData?.name}
+            placeholder="Contoh: Selada Keriting"
+            className="w-full p-2 border rounded-xl outline-emerald-500 bg-background"
+            required
           />
         </div>
-
-        <div className="flex flex-col gap-3">
-          <button
-            type="submit"
-            disabled={isPending}
-            className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
-          >
-            {isPending ? "Menyimpan ke Database..." : "Simpan Varietas"}
-          </button>
-          
-          {state?.error && (
-            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-xl">
-              <p className="text-sm text-destructive font-medium text-center">
-                ⚠️ {state.error}
-              </p>
-            </div>
-          )}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Harga Master (Rp/kg)</label>
+          <input
+            name="price"
+            type="number"
+            step="1"
+            defaultValue={initialData?.price}
+            placeholder="25000"
+            className="w-full p-2 border rounded-xl outline-emerald-500 bg-background"
+            required
+          />
         </div>
-      </form>
-    </div>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium">URL Gambar (Opsional)</label>
+        <input
+          name="imageUrl"
+          defaultValue={initialData?.imageUrl || ""}
+          placeholder="https://..."
+          className="w-full p-2 border rounded-xl outline-emerald-500 bg-background"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Kategori</label>
+        <select
+          name="category"
+          defaultValue={initialData?.category || "Sayuran Hijau"}
+          className="w-full p-2 border rounded-xl outline-emerald-500 bg-background"
+        >
+          <option value="Sayuran Hijau">Sayuran Hijau</option>
+          <option value="Tanaman Buah">Tanaman Buah</option>
+          <option value="Herbal">Herbal</option>
+        </select>
+      </div>
+
+      {state?.error && (
+        <p className="text-sm font-medium text-destructive animate-pulse">
+          ⚠️ {state.error}
+        </p>
+      )}
+
+      <button
+        type="submit"
+        disabled={isPending}
+        className="w-full bg-emerald-600 text-white p-3 rounded-xl font-bold hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-100 disabled:opacity-50"
+      >
+        {isPending ? (
+          <Loader2 className="animate-spin" />
+        ) : initialData ? (
+          <Save size={18} />
+        ) : (
+          <Plus size={18} />
+        )}
+        {initialData ? "Simpan Perubahan" : "Tambah Varietas"}
+      </button>
+    </form>
   );
 }

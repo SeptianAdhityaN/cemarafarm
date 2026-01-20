@@ -10,8 +10,16 @@
 !.yarn/releases
 !.yarn/versions
 
+# PWA files
+public/sw.js
+public/sw.js.map
+public/workbox-*.js
+public/worker-*.js
+
 # testing
 /coverage
+*.http
+*.rest
 
 # next.js
 /.next/
@@ -30,8 +38,18 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files
+.env
+.env.local
+.env.production
+.env.development.local
+.env.test.local
+.env.production.local
+
+# next.js
+/.next/
+/out/
+.next-boost
 
 # vercel
 .vercel

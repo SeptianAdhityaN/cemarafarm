@@ -1,140 +1,147 @@
-  datasource db {
-    provider  = "postgresql"
-    url       = env("DATABASE_URL")
-    directUrl = env("DIRECT_URL")
-  }
+// --- SCHEMA PRISMA CEMARAFARM ---
 
-  generator client {
-    provider = "prisma-client-js"
-  }
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
 
-  // --- AUTHENTICATION MODELS (NextAuth Standard) ---
-  model Account {
-    id                 String  @id @default(cuid())
-    userId             String
-    type               String
-    provider           String
-    providerAccountId  String
-    refresh_token      String? @db.Text
-    access_token       String? @db.Text
-    expires_at         Int?
-    token_type         String?
-    scope              String?
-    id_token           String? @db.Text
-    session_state      String?
+generator client {
+  provider = "prisma-client-js"
+}
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+// --- AUTHENTICATION MODELS ---
+model User {
+  id            String        @id @default(cuid())
+  name          String?
+  email         String?       @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          Role          @default(USER)
+  accounts      Account[]
+  sessions      Session[]
+  logs          ActivityLog[]
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
 
-    @@unique([provider, providerAccountId])
-  }
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
 
-  model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  }
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    password      String? 
-    role          Role      @default(USER)
-    accounts      Account[]
-    sessions      Session[]
-    createdAt     DateTime  @default(now())
+  @@unique([provider, providerAccountId])
+}
 
-    logs ActivityLog[]
-  }
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
 
-  enum Role {
-    ADMIN
-    STAFF
-    USER
-  }
+enum Role {
+  ADMIN
+  STAFF
+  USER
+}
 
-  // --- MASTER DATA (Dynamic Tables) ---
-  model Variety {
-    id          String            @id @default(cuid())
-    name        String            @unique
-    description String?
-    
-    price       Decimal  @default(0) @db.Decimal(10, 2)
-    imageUrl    String?  // Untuk menyimpan path/URL gambar
-    category    String?  @default("Sayuran")
+// --- MASTER DATA ---
+model Variety {
+  id          String            @id @default(cuid())
+  name        String            @unique
+  description String?
+  price       Decimal           @default(0) @db.Decimal(10, 2)
+  imageUrl    String?
+  category    String?           @default("Sayuran")
+  isArchived  Boolean           @default(false)
+  batches     ProductionBatch[]
 
-    isArchived  Boolean           @default(false)
-    batches     ProductionBatch[]
-  }
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
 
-  model SalesChannel {
-    id             String          @id @default(cuid())
-    name           String          @unique
-    isArchived     Boolean         @default(false)
-    sales          Sale[]
-  }
+model SalesChannel {
+  id         String  @id @default(cuid())
+  name       String  @unique
+  isArchived Boolean @default(false)
+  sales      Sale[]
 
-  // --- CORE BUSINESS LOGIC ---
-  model ProductionBatch {
-    id                   String          @id @default(cuid())
-    batchCode            String          @unique
-    varietyId            String
-    variety              Variety         @relation(fields: [varietyId], references: [id])
-    sowingDate           DateTime
-    estimatedHarvestDate DateTime
-    
-    initialSeeds         Int             @default(0)
-    actualHarvestDate    DateTime?       
-    
-    currentStockKg       Float           @default(0)
-    status               BatchStatus     @default(SEEDING)
-    sales                Sale[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
 
-    isArchived           Boolean         @default(false)
-    createdAt            DateTime        @default(now())
-  }
+// --- CORE BUSINESS LOGIC ---
+model ProductionBatch {
+  id                   String      @id @default(cuid())
+  batchCode            String      @unique
+  varietyId            String
+  variety              Variety     @relation(fields: [varietyId], references: [id])
+  sowingDate           DateTime
+  estimatedHarvestDate DateTime
+  initialSeeds         Int         @default(0)
+  actualHarvestDate    DateTime?
+  currentStockKg       Float       @default(0)
+  status               BatchStatus @default(SEEDING)
+  sales                Sale[]
+  isArchived           Boolean     @default(false)
 
-  model Sale {
-    id             String          @id @default(cuid())
-    batchId        String
-    batch          ProductionBatch @relation(fields: [batchId], references: [id])
-    channelId      String
-    channel        SalesChannel    @relation(fields: [channelId], references: [id])
-    customerName   String
-    quantityKg     Float
-    
-    unitPrice      Decimal         @db.Decimal(12, 2)
-    totalPrice     Decimal         @db.Decimal(12, 2)
-    
-    paymentStatus  PaymentStatus   @default(UNPAID)
-    createdAt      DateTime        @default(now())
-  }
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+}
 
-  enum BatchStatus {
-    SEEDING
-    GROWING
-    READY_TO_HARVEST
-    COMPLETED
-    FAILED
-  }
+model Sale {
+  id            String        @id @default(cuid())
+  batchId       String
+  batch         ProductionBatch @relation(fields: [batchId], references: [id])
+  channelId     String
+  channel       SalesChannel    @relation(fields: [channelId], references: [id])
+  customerName  String
+  quantityKg    Float
+  unitPrice     Decimal       @db.Decimal(12, 2)
+  totalPrice    Decimal       @db.Decimal(12, 2)
+  paymentStatus PaymentStatus @default(UNPAID)
 
-  enum PaymentStatus {
-    PAID
-    UNPAID
-    CANCELLED
-  }
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
 
-  model ActivityLog {
+// --- UTILITY MODELS ---
+model ActivityLog {
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id])
-  action    String 
+  action    String
   details   String
   createdAt DateTime @default(now())
 
   @@index([userId])
+}
+
+enum BatchStatus {
+  SEEDING
+  GROWING
+  READY_TO_HARVEST
+  COMPLETED
+  FAILED
+}
+
+enum PaymentStatus {
+  PAID
+  UNPAID
+  CANCELLED
 }

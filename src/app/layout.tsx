@@ -25,13 +25,20 @@ export const metadata: Metadata = {
     template: "%s | CemaraFarm"
   },
   description: "CemaraFarm menyediakan sayuran hidroponik premium seperti Selada Romaine dan Pakcoy, dipanen segar setiap hari di Nganjuk. Tanpa pestisida & higienis.",
-  keywords: ["hidroponik nganjuk", "sayur segar nganjuk", "selada keriting nganjuk", "green lettuce nganjuk", "kebun hidroponik", "cemarafarm", "sayur tanpa pestisida"],
+  keywords: ["hidroponik nganjuk", "selada hidroponik", "sayur segar nganjuk", "selada keriting nganjuk", "green lettuce nganjuk", "kebun hidroponik", "cemarafarm", "sayur tanpa pestisida"],
   authors: [{ name: "CemaraFarm Team" }],
   creator: "CemaraFarm",
   
   verification: {
     google: "0UUzAal14TR3B_M5vpb7YsKQOxEqgxc8fpJZ8Scp2dg",
   },
+
+  metadataBase: new URL(
+    process.env.NODE_ENV === "production" 
+      ? "https://cemarafarm.vercel.app" 
+      : "http://localhost:3000"
+  ),
+
   // Open Graph (Untuk tampilan saat link dibagikan di WA/FB/IG)
   openGraph: {
     type: "website",
@@ -53,7 +60,7 @@ export const metadata: Metadata = {
   // Twitter Card
   twitter: {
     card: "summary_large_image",
-    title: "CemaraFarm | Sayuran Hidroponik Nganjuk",
+    title: "CemaraFarm | Hidroponik Nganjuk",
     description: "Dipanen setiap pagi, sampai di meja makan Anda dalam kondisi terbaik.",
     images: ["/og-image.jpg"],
   },
@@ -62,6 +69,16 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
+  },
+
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "CemaraFarm",
+  },
+  formatDetection: {
+    telephone: false,
   },
 };
 

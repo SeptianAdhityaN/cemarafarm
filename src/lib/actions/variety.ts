@@ -57,10 +57,46 @@ export async function createVariety(
   }
 }
 
+// Action untuk Update Varietas
+export async function updateVariety(
+  id: string,
+  prevState: VarietyState | null,
+  formData: FormData
+): Promise<VarietyState> {
+  const name = formData.get("name") as string;
+  const description = formData.get("description") as string;
+  const price = formData.get("price") as string;
+  const imageUrl = formData.get("imageUrl") as string;
+  const category = formData.get("category") as string;
+
+  if (!name || !price) return { error: "Nama dan Harga wajib diisi" };
+
+  try {
+    await prisma.variety.update({
+      where: { id },
+      data: {
+        name,
+        description: description || null,
+        price: parseFloat(price),
+        imageUrl: imageUrl || null,
+        category: category || "Sayuran",
+      },
+    });
+
+    revalidatePath("/settings/varieties");
+    revalidatePath("/katalog"); // Penting agar harga di katalog publik berubah
+    return { success: true, error: null };
+  } catch {
+    return { error: "Gagal memperbarui data" };
+  }
+}
+
+// Fungsi Delete (Archived)
 export async function deleteVariety(id: string) {
   await prisma.variety.update({
     where: { id },
     data: { isArchived: true },
   });
   revalidatePath("/settings/varieties");
+  revalidatePath("/katalog");
 }

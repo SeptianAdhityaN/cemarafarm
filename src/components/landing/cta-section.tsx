@@ -4,7 +4,7 @@ import { CheckCircle2 } from "lucide-react";
 
 const BENEFITS = [
   "Prioritas stok panen",
-  "Gratis ongkir area Surabaya",
+  "Gratis ongkir area Nganjuk",
   "Varietas selada pilihan",
 ];
 

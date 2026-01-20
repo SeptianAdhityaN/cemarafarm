@@ -36,6 +36,9 @@ export default async function PublicLayout({
               <Link href="/" className="text-sm font-medium hover:text-primary">
                 Beranda
               </Link>
+              <Link href="/tentang-kami" className="text-sm font-medium">
+                Tentang Kami
+              </Link>
               <Link href="/katalog" className="text-sm font-medium">
                 Katalog
               </Link>
@@ -94,7 +97,7 @@ export default async function PublicLayout({
               <p className="text-background/60 text-sm leading-relaxed max-w-sm">
                 Membangun masa depan ketahanan pangan melalui sistem hidroponik
                 modern yang jujur, segar, dan tanpa pestisida langsung dari
-                Surabaya.
+                Nganjuk.
               </p>
             </div>
 
@@ -116,7 +119,7 @@ export default async function PublicLayout({
                   Log Aktivitas
                 </Link>
                 <Link
-                  href="/tentang"
+                  href="/tentang-kami"
                   className="hover:text-primary transition-colors"
                 >
                   Tentang Kami

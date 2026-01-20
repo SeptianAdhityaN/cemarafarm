@@ -31,3 +31,26 @@ export const STATIC_ACTIVITIES = [
     category: "Maintenance",
   },
 ];
+
+export const ABOUT_DATA = {
+  title: "Tentang CemaraFarm",
+  tagline: "Segar, Sehat, dan Tanpa Pestisida dari Nganjuk.",
+  story: "CemaraFarm lahir dari semangat untuk menyediakan akses sayuran hidroponik berkualitas premium bagi warga Nganjuk. Kami percaya bahwa kesehatan dimulai dari apa yang kita makan, itulah sebabnya kami menerapkan standar budidaya yang ketat tanpa pestisida kimia berbahaya.",
+  values: [
+    {
+      title: "Kualitas Premium",
+      description: "Hanya sayuran terbaik yang kami panen dan kirimkan ke pelanggan kami.",
+      icon: "Leaf"
+    },
+    {
+      title: "Teknologi Modern",
+      description: "Menggunakan sistem hidroponik presisi untuk nutrisi sayuran yang optimal.",
+      icon: "Cpu"
+    },
+    {
+      title: "Lokal & Segar",
+      description: "Dipanen di hari pengiriman untuk menjaga kesegaran maksimal.",
+      icon: "Truck"
+    }
+  ]
+};

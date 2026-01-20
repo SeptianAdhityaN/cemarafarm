@@ -1,20 +1,15 @@
 // src/types/next-auth.d.ts
 import { DefaultSession, DefaultUser } from "next-auth";
-import { JWT } from "next-auth/jwt";
+import { JWT as NextAuthJWT } from "next-auth/jwt"; // Impor tetap dipertahankan
 
 declare module "next-auth" {
-  /**
-   * Menambahkan properti 'role' ke dalam objek user yang dikembalikan oleh authorize
-   */
   interface User extends DefaultUser {
     id: string;
     role: string;
   }
 
-  /**
-   * Menambahkan properti 'role' ke dalam objek session.user
-   */
   interface Session {
+    error?: "RefreshAccessTokenError"; // Untuk menangkap error timeout
     user: {
       id: string;
       role: string;
@@ -23,11 +18,10 @@ declare module "next-auth" {
 }
 
 declare module "next-auth/jwt" {
-  /**
-   * Menambahkan properti 'role' ke dalam token JWT
-   */
   interface JWT {
     id: string;
     role: string;
+    expiresAt?: number; // Tambahkan ini untuk logika timeout
+    error?: "RefreshAccessTokenError"; // Tambahkan ini untuk logika timeout
   }
 }

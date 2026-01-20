@@ -7,6 +7,7 @@ import { UserMenu } from "@/components/layout/user-menu";
 import { FARM_INFO } from "@/lib/constants";
 import { Leaf } from "lucide-react";
 import Link from "next/link";
+import { SessionTimeoutHandler } from "@/components/auth/session-timeout-handler";
 
 export default async function AdminLayout({
   children,
@@ -28,6 +29,7 @@ export default async function AdminLayout({
 
   return (
     <div className="flex min-h-screen bg-background transition-colors duration-300">
+      <SessionTimeoutHandler />
       {/* Sidebar - Desktop Only */}
       <Sidebar />
 
@@ -35,7 +37,10 @@ export default async function AdminLayout({
         {/* Header / Navbar Profesional */}
         <header className="h-16 border-b border-border bg-background/80 backdrop-blur-xl flex items-center justify-between px-4 md:px-8 sticky top-0 z-40 transition-all">
           <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="flex items-center gap-2 group md:hidden">
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-2 group md:hidden"
+            >
               {/* Logo tetap ada di mobile */}
               <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
                 <Leaf className="w-6 h-6 text-primary-foreground" />

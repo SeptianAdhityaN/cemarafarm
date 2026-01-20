@@ -5,7 +5,12 @@ import GoogleProvider from "next-auth/providers/google";
 import { AuthService } from "@/services/auth.service";
 
 export const authOptions: NextAuthOptions = {
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+    maxAge: 1 * 60 * 60, // Sesi 1 Jam
+    // maxAge: 30, // Sesi 1 Jam
+    updateAge: 24 * 60 * 60, 
+  },
   pages: { signIn: "/login" },
   providers: [
     GoogleProvider({
@@ -21,7 +26,6 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
         
-        // validateUser sekarang mengembalikan objek yang sesuai dengan interface User kita
         const user = await AuthService.validateUser(credentials.email, credentials.password);
         
         if (!user) return null;
@@ -30,23 +34,36 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role, // TypeScript sekarang mengenali ini
+          role: user.role,
         };
       }
     })
   ],
-callbacks: {
+  callbacks: {
     async jwt({ token, user, account }) {
-      if (user) {
-        token.id = user.id;
-        token.role = user.role || "STAFF";
+      if (user && account) {
+        return {
+          ...token,
+          id: user.id,
+          role: user.role || "STAFF",
+          expiresAt: Math.floor(Date.now() / 1000) + (1 * 60 * 60), 
+          // expiresAt: Math.floor(Date.now() / 1000) + 30, 
+        };
       }
-      return token;
+
+      // Cek apakah token sudah melewati batas waktu
+      if (Date.now() < (token.expiresAt as number) * 1000) {
+        return token;
+      }
+
+      // Jika token sudah expired, tandai dengan error
+      return { ...token, error: "RefreshAccessTokenError" };
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id;
-        session.user.role = token.role;
+        session.user.id = token.id as string;
+        session.user.role = token.role as string;
+        session.error = token.error as "RefreshAccessTokenError" | undefined;
       }
       return session;
     }

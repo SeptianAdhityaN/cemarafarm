@@ -28,7 +28,7 @@ export default function HeroSection() {
           </h1>
 
           <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
-            Sayuran hidroponik premium dari kebun lokal Surabaya.
+            Sayuran hidroponik premium dari kebun lokal Nganjuk.
             Tanpa pestisida, higienis, dan dipanen sesuai pesanan.
           </p>
 

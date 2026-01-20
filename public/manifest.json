@@ -1,0 +1,49 @@
+{
+  "name": "CemaraFarm - Hidroponik Nganjuk",
+  "short_name": "CemaraFarm",
+  "description": "Solusi sayuran hidroponik segar tanpa pestisida langsung dari kebun CemaraFarm.",
+  "id": "/?source=pwa",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "minimal-ui"],
+  "scope": "/",
+  "orientation": "portrait",
+  "background_color": "#F8FAFC",
+  "theme_color": "#22c55e",
+  "categories": ["shopping", "business", "food"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/og-image.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Tampilan Katalog CemaraFarm"
+    },
+    {
+      "src": "/og-image.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Mobile Dashboard CemaraFarm"
+    }
+  ]
+}
