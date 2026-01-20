@@ -14,7 +14,7 @@ export function RoleSelect({ userId, currentRole }: RoleSelectProps) {
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newRole = e.target.value as Role;
-    
+
     // Konfirmasi sederhana agar tidak salah klik
     if (confirm(`Ubah akses user menjadi ${newRole}?`)) {
       startTransition(async () => {
@@ -33,14 +33,18 @@ export function RoleSelect({ userId, currentRole }: RoleSelectProps) {
         disabled={isPending}
         onChange={handleChange}
         className={`
-          text-xs p-2 border border-slate-200 rounded-lg outline-emerald-500 bg-white shadow-sm 
-          focus:ring-2 focus:ring-emerald-100 transition-all cursor-pointer
-          ${isPending ? "opacity-50 grayscale" : "opacity-100"}
-        `}
+    text-[11px] font-black tracking-wider p-2 border border-slate-200 rounded-xl 
+    outline-emerald-500 bg-slate-50 shadow-sm 
+    focus:ring-4 focus:ring-emerald-50 transition-all cursor-pointer
+    appearance-none pr-8 // Agar lebih custom
+    ${isPending ? "opacity-50" : "opacity-100"}
+    ${currentRole === "ADMIN" ? "text-purple-700 font-bold" : ""}
+    ${currentRole === "STAFF" ? "text-blue-700 font-bold" : ""}
+  `}
       >
         <option value="ADMIN">ADMIN</option>
         <option value="STAFF">STAFF</option>
-        <option value="USER">USER (No Dashboard)</option>
+        <option value="USER">USER (No Access)</option>
       </select>
       {isPending && (
         <span className="absolute -right-6 top-1/2 -translate-y-1/2">
