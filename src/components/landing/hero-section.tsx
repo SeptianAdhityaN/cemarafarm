@@ -28,7 +28,7 @@ export default function HeroSection() {
           </h1>
 
           <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
-            Sayuran hidroponik premium dari kebun lokal Nganjuk.
+            Selada hidroponik premium dari kebun lokal Nganjuk.
             Tanpa pestisida, higienis, dan dipanen sesuai pesanan.
           </p>
 
@@ -60,8 +60,8 @@ export default function HeroSection() {
 
           <div className="relative aspect-4/5 rounded-[2.5rem] overflow-hidden shadow-2xl bg-muted border border-border/50">
             <Image
-              src="/hero-farm.jpg"
-              alt="Kebun selada hidroponik Cemara Farm"
+              src="/image/hero-farm.jpg"
+              alt="Suasana Kebun Selada Hidroponik CemaraFarm Nganjuk"
               fill
               priority
               sizes="(max-width: 768px) 100vw, 50vw"

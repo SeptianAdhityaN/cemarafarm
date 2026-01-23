@@ -1,7 +1,7 @@
 {
   "name": "CemaraFarm - Hidroponik Nganjuk",
   "short_name": "CemaraFarm",
-  "description": "Solusi sayuran hidroponik segar tanpa pestisida langsung dari kebun CemaraFarm.",
+  "description": "Solusi selada hidroponik segar tanpa pestisida langsung dari kebun CemaraFarm.",
   "id": "/?source=pwa",
   "start_url": "/?source=pwa",
   "display": "standalone",

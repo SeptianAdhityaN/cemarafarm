@@ -25,8 +25,8 @@ export default function TentangKamiPage() {
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
         <div className="relative aspect-video lg:aspect-square rounded-[3rem] overflow-hidden shadow-2xl">
           <Image 
-            src="/hero-farm.jpg" 
-            alt="Kebun CemaraFarm" 
+            src="/image/hero-farm2.jpg" 
+            alt="Kebun Selada Hidroponik CemaraFarm Nganjuk"
             fill 
             className="object-cover"
           />

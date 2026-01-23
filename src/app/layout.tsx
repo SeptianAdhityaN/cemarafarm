@@ -21,32 +21,43 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   // Title yang baik mengandung Keyword Utama + Nama Brand
   title: {
-    default: "CemaraFarm | Sayuran Hidroponik Segar Nganjuk Tanpa Pestisida",
-    template: "%s | CemaraFarm"
+    default: "CemaraFarm | Selada Hidroponik Segar Nganjuk Tanpa Pestisida",
+    template: "%s | CemaraFarm",
   },
-  description: "CemaraFarm menyediakan sayuran hidroponik premium seperti Selada Romaine dan Pakcoy, dipanen segar setiap hari di Nganjuk. Tanpa pestisida & higienis.",
-  keywords: ["hidroponik nganjuk", "selada hidroponik", "sayur segar nganjuk", "selada keriting nganjuk", "green lettuce nganjuk", "kebun hidroponik", "cemarafarm", "sayur tanpa pestisida"],
+  description:
+    "CemaraFarm menyediakan selada hidroponik premium seperti Selada Romaine dan Pakcoy, dipanen segar setiap hari di Nganjuk. Tanpa pestisida & higienis.",
+  keywords: [
+    "hidroponik nganjuk",
+    "selada hidroponik",
+    "sayur segar nganjuk",
+    "selada keriting nganjuk",
+    "green lettuce nganjuk",
+    "kebun hidroponik",
+    "cemarafarm",
+    "sayur tanpa pestisida",
+  ],
   authors: [{ name: "CemaraFarm Team" }],
   creator: "CemaraFarm",
-  
+
   verification: {
     google: "0UUzAal14TR3B_M5vpb7YsKQOxEqgxc8fpJZ8Scp2dg",
   },
 
   metadataBase: new URL(
-    process.env.NODE_ENV === "production" 
-      ? "https://cemarafarm.vercel.app" 
-      : "http://localhost:3000"
+    process.env.NODE_ENV === "production"
+      ? "https://cemarafarm.vercel.app"
+      : "http://localhost:3000",
   ),
 
   // Open Graph (Untuk tampilan saat link dibagikan di WA/FB/IG)
   openGraph: {
     type: "website",
     locale: "id_ID",
-    url: "https://cemarafarm.vercel.app", 
+    url: "https://cemarafarm.vercel.app",
     siteName: "CemaraFarm",
-    title: "CemaraFarm - Sayuran Hidroponik Segar Tanpa Pestisida",
-    description: "Nikmati kesegaran sayuran hidroponik premium langsung dari kebun kami di Nganjuk.",
+    title: "CemaraFarm - Selada Hidroponik Segar Tanpa Pestisida",
+    description:
+      "Nikmati kesegaran selada hidroponik premium langsung dari kebun kami di Nganjuk.",
     images: [
       {
         url: "/og-image.jpg",
@@ -61,7 +72,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "CemaraFarm | Hidroponik Nganjuk",
-    description: "Dipanen setiap pagi, sampai di meja makan Anda dalam kondisi terbaik.",
+    description:
+      "Dipanen setiap pagi, sampai di meja makan Anda dalam kondisi terbaik.",
     images: ["/og-image.jpg"],
   },
 
@@ -90,7 +102,11 @@ export default async function RootLayout({
   const session = await getServerSession(authOptions);
 
   return (
-    <html lang="id" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
+    <html
+      lang="id"
+      className={`${inter.variable} ${playfair.variable}`}
+      suppressHydrationWarning
+    >
       {/* PENTING: Gunakan bg-background dan text-foreground 
         agar mengikuti variabel OKLCH di globals.css Anda.
       */}
@@ -108,6 +124,46 @@ export default async function RootLayout({
             </QueryProvider>
           </AuthProvider>
         </ThemeProvider>
+
+        {/* Schema.org JSON-LD */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              name: "CemaraFarm",
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Nganjuk",
+                addressRegion: "Jawa Timur",
+                addressCountry: "ID",
+              },
+              description:
+                "Produsen selada hidroponik segar berkualitas di Nganjuk.",
+              url: "https://cemarafarm.vercel.app",
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "AgricultureService",
+              name: "CemaraFarm Nganjuk",
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Nganjuk",
+                addressRegion: "Jawa Timur",
+                addressCountry: "ID",
+              },
+              description:
+                "Produsen selada hidroponik segar berkualitas di Nganjuk.",
+              url: "https://cemarafarm.vercel.app",
+            }),
+          }}
+        />
       </body>
     </html>
   );

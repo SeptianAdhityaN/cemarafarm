@@ -156,7 +156,7 @@ export function CatalogClient({
                 </div>
                 <CardDescription className="line-clamp-2 mt-2 h-10 italic">
                   {product.description ||
-                    "Sayuran hidroponik segar, dipanen langsung dari CemaraFarm."}
+                    "Selada hidroponik segar, dipanen langsung dari CemaraFarm."}
                 </CardDescription>
               </CardHeader>
 
